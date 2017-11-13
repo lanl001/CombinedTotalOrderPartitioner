@@ -6,9 +6,9 @@ import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Partitioner;
 
-public class TezTotalOrderPartitioner<K extends WritableComparable<?>, V>
-		extends com.microfun.llx.tez.partition.TezTotalOrderPartitioner<K, V> implements Partitioner<K, V>,HivePartitioner<K, V>{
-	public TezTotalOrderPartitioner() {
+public class CombinedPartitioner<K extends WritableComparable<?>, V>
+		extends com.microfun.llx.tez.partition.CombinedPartitioner<K, V> implements Partitioner<K, V>,HivePartitioner<K, V>{
+	public CombinedPartitioner() {
 	}
 
 	public void configure(JobConf job) {
@@ -24,7 +24,7 @@ public class TezTotalOrderPartitioner<K extends WritableComparable<?>, V>
 	 */
 	@Deprecated
 	public static void setPartitionFile(JobConf job, Path p) {
-		com.microfun.llx.tez.partition.TezTotalOrderPartitioner.setPartitionFile(job, p);
+		com.microfun.llx.tez.partition.CombinedPartitioner.setPartitionFile(job, p);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class TezTotalOrderPartitioner<K extends WritableComparable<?>, V>
 	 */
 	@Deprecated
 	public static String getPartitionFile(JobConf job) {
-		return com.microfun.llx.tez.partition.TezTotalOrderPartitioner.getPartitionFile(job);
+		return com.microfun.llx.tez.partition.CombinedPartitioner.getPartitionFile(job);
 	}
 
 	@Override

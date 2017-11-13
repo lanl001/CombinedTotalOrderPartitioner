@@ -50,7 +50,7 @@ import org.apache.hadoop.hive.ql.io.HiveKey;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
-public class TezTotalOrderPartitioner<K extends WritableComparable<?>,V>
+public class CombinedPartitioner<K extends WritableComparable<?>,V>
     extends Partitioner<K,V> implements Configurable {
 
   private Node partitions;
@@ -62,11 +62,11 @@ public class TezTotalOrderPartitioner<K extends WritableComparable<?>,V>
   public static final String NATURAL_ORDER = 
     "mapreduce.totalorderpartitioner.naturalorder";
   Configuration conf;
-  private static final Log LOG = LogFactory.getLog(TezTotalOrderPartitioner.class);
+  private static final Log LOG = LogFactory.getLog(CombinedPartitioner.class);
   
   boolean enabled;
 
-  public TezTotalOrderPartitioner() { }
+  public CombinedPartitioner() { }
 
   /**
    * Read in the partition file and build indexing data structures.
@@ -82,7 +82,6 @@ public class TezTotalOrderPartitioner<K extends WritableComparable<?>,V>
   public void setConf(Configuration conf) {
     try {
       this.conf = conf;
-      //TODO: DISRIBUTED_SORTED_PARTITION_EDGE should belong to a class
       this.enabled = conf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_GLOBAL_SORTED_TABLE, false);
       if(!this.enabled)
     	  return;
@@ -95,7 +94,6 @@ public class TezTotalOrderPartitioner<K extends WritableComparable<?>,V>
       Job job = Job.getInstance(conf);
       Class<K> keyClass = (Class<K>) conf.getClass(TezRuntimeConfiguration.TEZ_RUNTIME_KEY_CLASS, HiveKey.class);//(Class<K>)job.getMapOutputKeyClass();      
       K[] splitPoints = readPartitions(fs, partFile, keyClass, conf);
-      //Use TEZ_RUNTIME_NUM_EXPECTED_PARTITIONS instead of "mapreduce.job.reduces"
       if (splitPoints.length != conf.getInt(TezRuntimeFrameworkConfigs.TEZ_RUNTIME_NUM_EXPECTED_PARTITIONS, 1) - 1) {
         throw new IOException("Wrong number of partitions in keyset");
       }
